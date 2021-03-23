@@ -1,6 +1,6 @@
 <?php
     require( "../../functions.php" );
 
-    deleteUser( $_POST["color"] );
+    createTask( $_POST, $_POST["ProjectId"] );
     header( "Location: ../index.php" );
 ?>

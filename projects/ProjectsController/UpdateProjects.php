@@ -1,6 +1,6 @@
 <?php
     require( "../../functions.php" );
 
-    deleteUser( $_POST["color"] );
+    updateAllFromProject( $_POST, $_POST["ProjectId"] );
     header( "Location: ../index.php" );
 ?>

@@ -1,6 +1,6 @@
 <?php
     require( "../../functions.php" );
 
-    deleteUser( $_POST["color"] );
+    $update = updateProgress($_POST);
     header( "Location: ../index.php" );
 ?>

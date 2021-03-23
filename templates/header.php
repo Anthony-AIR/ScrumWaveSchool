@@ -28,10 +28,13 @@
 		}
 
 		#Scrumwave{
-    		position:absolute;
-    		top:10px;
-    		left:50%;
-    		transform:translate(-50%);
+			position:absolute;
+      		top:10px;
+      		left:50%;
+      		transform:translate(-50%);
+      		z-index:20;
+      		width:250px;
+      		height:100px;
     	}
 	</style>
-  	<img id="Scrumwave" src="<?= URL ?>public/img/Logo.png" width="250px" height="100px">
+    <img id="Scrumwave" src="../templates/img/Logo.png" >

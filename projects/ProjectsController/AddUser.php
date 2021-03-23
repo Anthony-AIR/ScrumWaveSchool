@@ -1,6 +1,6 @@
 <?php
     require( "../../functions.php" );
 
-    deleteUser( $_POST["color"] );
+    addUser($_POST, $_POST["color"]);
     header( "Location: ../index.php" );
 ?>
