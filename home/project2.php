@@ -1,6 +1,6 @@
 <?php
 require("../functions.php");
-$projects = getAllProjects();
+$projects = getProjectById( $_GET["id"] );
 $tasks = getAllTasks();
 $users = getAllUsers();
 $noneUsers = getAllNoneUsers();
@@ -17,20 +17,20 @@ include("../templates/headerMenu.php");
 <!-- de code voor de navbar, add user button en delete user button -->
 <nav  class="navbar-nav">
   <ul class="navbar-nav-flex">
-    <li class="nav-item">
-    	<a class="nav-link" href="../home/index.php">
-    		<i class="fas fa-home"></i>
-    	</a>
-    </li>
-    <li class="nav-item user-color">
-    	<div class="navbar-menu">
+  	<li class="nav-item">
+  		<a class="nav-link" href="index.php">
+  			<i class="fas fa-home"></i>
+  		</a>
+  	</li>
+  	<li class="nav-item user-color">
+      <div class="navbar-menu">
         <?php foreach( $users as $user ){ ?>
           <span style="margin-left:2vh; color: var(--text-primary);">
             <strong><?php echo $user["Name"] ?></strong>
             <div class="colors"  style="background-color:<?php echo $user["Color"] ?>"></div>
           </span>
         <?php } ?>
-        <button type="button" class="more-users">+</button><!-- add user button -->
+        <button type="submit" class="more-users">+</button><!-- add user button -->
         <button type="button" class="less-users">-</button><!-- delete user button -->
     	</div>
     </li>
@@ -39,7 +39,7 @@ include("../templates/headerMenu.php");
 
 <!-- de code voor de popup delete user -->
 <div class="less-form-popup" id="myForm">
-  <form method="post" action="ProjectsController/DeleteUser.php" class="form-container"> <!-- de echo URL in de action zorgt ervoor dat de URL opnieuw begint en niet achter de al bestaande URL ( dit geld voor alle echo URL's ) -->
+  <form method="post" action="../projects/ProjectsController/DeleteUser.php" class="form-container"> <!-- de echo URL in de action zorgt ervoor dat de URL opnieuw begint en niet achter de al bestaande URL ( dit geld voor alle echo URL's ) -->
     <h1>delete user</h1>
     <label for="color"><b>color</b></label>
     <select name="color" id="formColor" required>
@@ -78,7 +78,7 @@ include("../templates/headerMenu.php");
 
 <!-- de code voor de popup add user -->
 <div class="form-popup" id="myForm">
-  <form method="post" action="ProjectsController/AddUser.php" class="form-container">
+  <form method="post" action="../projects/ProjectsController/AddUser.php" class="form-container">
     <h1>add user</h1>
     <label for="name"><b>name</b></label>
     <input id="formName" type="text" placeholder="enter name" name="Name" required>
@@ -88,15 +88,15 @@ include("../templates/headerMenu.php");
         <option value="<?php echo $noneUser['Id'] ?>" style="background-color:<?php echo $noneUser['Color'] ?>"><?php echo $noneUser["ColorName"] ?></option>
       <?php } ?>
     </select>
-    
+
     <button type="submit" class="btn">add</button>
     <button type="reset" class="btn cancel more-users">cancel</button>
   </form>
-  
+
   <style>
 
     /** basic popup styling */
-    .form-popup, .less-form-popup {
+    .form-popup, .less-form-popup  {
       display: none;
       position: fixed;
       bottom: 5rem;
@@ -112,7 +112,7 @@ include("../templates/headerMenu.php");
       padding: 10px;
     }
 
-    #formName, #formColor{ 
+    #formName, #formColor{
       width: 70%;
       padding: 15px;
       margin: 5px 0 22px 0;
@@ -342,7 +342,7 @@ include("../templates/headerMenu.php");
       width:590px;
       border: 2px solid black;
       border-radius:12px;
-      background-color: var(--bg-primary);;
+      background-color: var(--bg-primary);
       z-index:9;
     }
 
@@ -355,9 +355,9 @@ include("../templates/headerMenu.php");
     }
 
     .form-container2 input[name=description]{
-      margin-top: 15px;
-      width: 300px;
-      height: 100px;
+      margin-top:15px;
+      width:300px;
+      height:100px;
       border: none;
       background: white;
     }
@@ -381,57 +381,56 @@ include("../templates/headerMenu.php");
 
   <!-- de 1ste row in de table met alle kolom namen erin -->
   <tr>
-      <td class="td"><h2>projects</h2></td>
-      <td class="td"><h2>back log<h2></td>
-      <td class="td"><h2>to do<h2></td>
-      <td class="td"><h2>in progress</h2></td>
-      <td class="td"><h2>evaluate</h2></td>
-      <td class="td"><h2>done</h2></td>
+    <td class="td"><h2>projects</h2></td>
+    <td class="td"><h2>back log<h2></td>
+    <td class="td"><h2>to do<h2></td>
+    <td class="td"><h2>in progress</h2></td>
+    <td class="td"><h2>evaluate</h2></td>
+    <td class="td"><h2>done</h2></td>
   </tr>
-
+  
   <!-- dit is de code voor een project en inhoud -->
   <?php foreach ($projects as $project){ ?> <!-- voor ieder project in de database word dit 1 keer uitgeprint -->
-    <tr style="background-color:<?php echo $project["Color"];?>; height:200px;">  <!-- volgende row -->
-
+    <tr style="background-color:<?php echo $project["Color"]?>; height:200px;">
+        
       <!-- de eerste kolom van deze row -->
       <td class="projectName" ><strong><?php echo $project["Name"]?></strong><br>
         <button class="project_btn" id="project_btn<?php echo $project["Id"]?>" type="button" ><i class="fas fa-pen"></i></button> <!-- button om deze project aan te passen ( project name, project description, project color ) -->
-        
+
         <!-- de code voor de projectForm -->
         <div class="projectForm" id="projectForm<?php echo $project["Id"]?>" name="projectForm">
-          <form name="projectForm" method="post" action="projectsController/updateProjects.php" class="form-container2"><br><br>
-            
+          <form name="projectForm" method="post" action="../projects/ProjectsController/updateProjectsOneProject.php?id=<?php echo $project["Id"] ?>" class="form-container2"><br><br>
+                  
             <!-- normale input voor name en discription -->
             <input type="text" placeholder="project Name:" name="Name" value="<?php echo $project["Name"]?>" required><br><br>
             <input type="text" placeholder="project description:" name="Description" value="<?php echo $project["description"]?>"><br><br>
 
             <!-- deze select kijkt welke kleur er momenteel voor de project word gebruikt en geeft daar een gepaste select voor -->
             <select style="width:140px; height:30px;" name="Color" required>
-
-              <?php if($project["Color"] == "red"){ ?>
+              
+              <?php if($project["Color"] == "red"){?>
                 <option style="background-color:red;" value="<?php echo $project["Color"]?>" selected>Important</option>
                 <option style="background-color:yellow;" value="yellow">On Hold</option>
                 <option style="background-color:#ffffff;" value="white">Standard</option>
               <?php } 
 
-              else if($project["Color"] == "yellow"){ ?>
+              else if($project["Color"] == "yellow"){?>
                 <option style="background-color:yellow;" value="<?php echo $project["Color"]?>" selected>On Hold</option>
                 <option style="background-color:red;" value="red">Important</option>
                 <option style="background-color:#ffffff;" value="white">Standard</option>
               <?php } 
-
-              else if($project["Color"] == "white"){ ?>
+              
+              else if($project["Color"] == "white"){?>
                 <option style="background-color:#ffffff;" value="<?php echo $project["Color"]?>" selected>Standard</option>
                 <option style="background-color:red;" value="red">Important</option>
                 <option style="background-color:yellow;" value="yellow">On Hold</option>
               <?php } ?>
 
             </select><br>
-              
-            <input type="text" hidden name="ProjectId" value="<?php echo $project["Id"] ?>">
+
             <button style="margin-top:80px;" type="button" id="closeProjectTab<?php echo $project["Id"]?>">Close project</button><!-- button om projectForm invisible te maken -->
             <button type="submit" value="submit">save project</button>
-
+                
           </form>
         </div>
 
@@ -440,21 +439,21 @@ include("../templates/headerMenu.php");
 
           /** script om projectForm invisible of visible te maken */
           $( "#project_btn<?php echo $project["Id"]?>" ).click( function() {
-
-            if ($(".projectForm").is(":visible")) { /** dit zorgt ervoor dat als projectForm visible is dan word het invisible*/
+              
+            if ($(".projectForm").is(":visible")) {
               for(i = 0; i < document.getElementsByClassName("projectForm").length; i++) {
                 document.getElementsByClassName("projectForm")[i].style.display = "none";
               }
             }
 
             else{
-              if ($(".myTask").is(":visible")) { /** dit zorgt ervoor dat als projectForm invisible en myTask visible dat myTask invisible word en projectForm visible*/
+              if ($(".myTask").is(":visible")) {
                 for(i = 0; i < document.getElementsByClassName("myTask").length; i++) {
                   document.getElementsByClassName("myTask")[i].style.display = "none";
                 }
               }
-              
-              if ($(".TaskForm").is(":visible")) { /** dit zorgt ervoor dat als projectForm invisible en TaskForm visible dat TaskForm invisible word en projectForm visible*/
+
+              if ($(".TaskForm").is(":visible")) {
                 for(i = 0; i < document.getElementsByClassName("TaskForm").length; i++) {
                   document.getElementsByClassName("TaskForm")[i].style.display = "none";
                 }
@@ -463,7 +462,7 @@ include("../templates/headerMenu.php");
             }
 
           });
-
+                
           /** script om projectForm invisible te maken */
           $( "#closeProjectTab<?php echo $project["Id"]?>" ).click( function() {
             for(i = 0; i < document.getElementsByClassName("projectForm").length; i++) {
@@ -475,205 +474,203 @@ include("../templates/headerMenu.php");
       </td>
 
       <!-- de tweede kolom van deze row -->
-      <td class="backlog">
-        <button class="addTaskbtn" id="addTaskbtn<?php echo $project["Id"]?>" type="button" ><i class="fas fa-plus"></i></button><!-- button om een task toe tevoegen -->
+        <td class="backlog">
+          <button class="addTaskbtn" id="addTaskbtn<?php echo $project["Id"]?>" type="button" ><i class="fas fa-plus"></i></button><!-- button om een task toe tevoegen -->
           
-        <!-- tasks draggables en taskForm -->
-        <?php foreach( $tasks as $task ){ 
-          if( $task['projectId'] == $project['Id'] ){ /** deze regel is om te kijken of de task wel in deze project hoort */
-            foreach( $users as $user ){ 
-              if($user['Id'] == $task['Assigned_To']){/** deze regel is om de juiste user kleur in de task te zetten */
-                if($task['Progress'] == 0){ ?> <!-- deze regel zorgt ervoor dat alle task in de juiste kolom komen -->
-                  
-                  <!-- tasks draggable -->
-                  <div id="<?php echo $task["Id"];?>" class="<?php echo $task["projectId"];?> draggable" draggable="true">
-                    <p></a><?php echo $task["Task_name"]?></p><br> <!-- hier staat de naam van de task -->
-                    <div class="taskColor" style="background-color:<?php echo $user['Color'] ?>"></div> <!-- hier staan de kleur en button(volgende regel) van de task -->
-                    <button class="taskInfoBtn" data-transition="pop"  data-rel="popup" href="#" id="taskInfoBtn<?php echo $task["Id"] ?>"><i class="fas fa-eye"></i></button>
-                  </div>
-
-                <?php }
-              }
-            }
-          } 
-        } ?>
-
-        <!-- de code voor tasksForm -->
-        <div class="TaskForm" id="TaskForm<?php echo $project["Id"]?>" name="TaskForm">
-          <form name="addTask" method="post" action="projectsController/AddTask.php" class="form-container2"><br><br> <!-- de action in deze form gaat naar de ProjectsController(Projects) en zoekt dan de functie addTask dan sturen we daarna nog wat mee ( in dit geval $project["Id"]) -->
-            <input type="text" placeholder="task Name:" name="Task_name" required><br><br>
-            <input type="text" placeholder="Task description:" name="Description"><br><br>
-            <select name="Assigned_To" required>
-              <option value="" selected>assigned to</option>
-              <?php foreach( $users as $user ){ ?>
-                <option value=" <?php echo $user['Id'] ?> " style="background-color: <?php echo $user['Color'] ?> "> <?php echo $user["Name"] ?> </option>
-              <?php } ?>
-            </select>
-  
-            <input type="text" hidden name="ProjectId" value="<?php echo $project["Id"] ?>">
-            <br><br><br><br><br><br><br>
-            <button type="button" id="closeAddTaskTab<?php echo $project["Id"]?>">Close add task</button>
-            <button type="submit" value="submit">add task</button>
-          </form>
-        </div>
-            
-        <!-- de script voor tasksForm -->
-        <script scr="jquery-3.5.1.min.js">
-
-          $( "#addTaskbtn<?php echo $project["Id"]?>" ).click( function() { /** als er op addTaskbtn word geklikt voer deze functie uit */
-           
-            /** TaskForm invisible maken */
-            if ($(".TaskForm").is(":visible")) { /** dit zorgt ervoor dat als TaskForm visible is dan word het invisible */
-              for(i = 0; i < document.getElementsByClassName("TaskForm").length; i++) {
-                document.getElementsByClassName("TaskForm")[i].style.display = "none";
-              }
-            }
-
-            /** TaskForm visible maken en andere forms invisible */
-            else{
-              if ($(".myTask").is(":visible")) { /** dit zorgt ervoor dat als myTask visible is dan word het invisible */
-                for(i = 0; i < document.getElementsByClassName("myTask").length; i++) {
-                  document.getElementsByClassName("myTask")[i].style.display = "none";
-                }
-              }
-
-              if ($(".projectForm").is(":visible")) { /** dit zorgt ervoor dat als projectForm visible is dan word het invisible */
-                for(i = 0; i < document.getElementsByClassName("projectForm").length; i++) {
-                  document.getElementsByClassName("projectForm")[i].style.display = "none";
-                }
-              }
-
-              document.getElementById("TaskForm<?php echo $project["Id"]?>").style.display = "block"; /** dit zorgt ervoor dat TaskForm visible word */
-            }
-          });
-              
-          /** TaskForm invisible maken als er op closeAddTaskTab is geklikt */
-          $( "#closeAddTaskTab<?php echo $project["Id"]?>" ).click( function() {
-            for(i = 0; i < document.getElementsByClassName("TaskForm").length; i++) {
-              document.getElementsByClassName("TaskForm")[i].style.display = "none";
-            }
-          });
-
-        </script>
-      </td>
-
-      <!-- droppables -->
-      <!-- de derde kolom van deze row -->
-      <td class="dropTD">
-        <div class="droppable dropDIV" data-draggable-id="<?php echo $project["Id"]?>" name="1">
+          <!-- tasks draggables en taskForm -->
           <?php foreach( $tasks as $task ){ 
-            if( $task['projectId'] == $project['Id'] ){
+            if( $task['projectId'] == $project['Id'] ){ /** deze regel is om te kijken of de task wel in deze project hoort */
               foreach( $users as $user ){  
-                if($user['Id'] == $task['Assigned_To']){ 
-                  if($task['Progress'] == 1){ ?> <!-- deze regel zorgt ervoor dat alle task in de juiste kolom komen -->
-
-                    <!-- de task -->
-                    <div id="<?php echo $task["Id"]?>" class="<?php echo $task["projectId"]?> draggable" draggable="true">
-                      <p></a><?php echo $task["Task_name"]?></p><br>
-                      <div class="taskColor" style="background-color:<?php echo $user['Color'] ?>"></div>
-                      <button class="taskInfoBtn" data-transition="pop"  data-rel="popup" href="#"  id="taskInfoBtn<?php echo $task["Id"] ?>"><i class="fas fa-eye"></i></button>
-                    </div>
-
-                    <?php }
-                }
-              }
-            } 
-          } ?>
-        </div>
-      </td>
-
-      <!-- de vierde kolom van deze row -->
-      <td class="dropTD">
-        <div class="droppable dropDIV" data-draggable-id="<?php echo $project["Id"];?>" name="2">
-          <?php foreach( $tasks as $task ){ 
-            if( $task['projectId'] == $project['Id'] ){
-              foreach( $users as $user ){  
-                if($user['Id'] == $task['Assigned_To']){ 
-                    if($task['Progress'] == 2){ ?> <!-- deze regel zorgt ervoor dat alle task in de juiste kolom komen -->
-
-                      <!-- de task -->
-                      <div id="<?php echo $task["Id"]?>" class="<?php echo $task["projectId"]?> draggable" draggable="true">
-                        <p></a><?php echo $task["Task_name"]?></p><br>
-                        <div class="taskColor" style="background-color:<?php echo $user['Color'] ?>"></div>
-                        <button class="taskInfoBtn" data-transition="pop"  data-rel="popup" href="#" id="taskInfoBtn<?php echo $task["Id"] ?>"><i class="fas fa-eye"></i></button>
-                      </div>
-
-                    <?php }
-                }
-              }
-            } 
-          } ?>
-        </div>
-      </td>
-
-      <!-- de vijfde kolom van deze row -->
-      <td class="dropTD">
-        <div class="droppable dropDIV" data-draggable-id="<?php echo $project["Id"]?>" name="3">
-          <?php foreach( $tasks as $task ){ 
-            if( $task['projectId'] == $project['Id'] ){
-              foreach( $users as $user ){  
-                if($user['Id'] == $task['Assigned_To']){ 
-                  if($task['Progress'] == 3){ ?> <!-- deze regel zorgt ervoor dat alle task in de juiste kolom komen -->
-
-                    <!-- de task -->
-                    <div id="<?php echo $task["Id"]?>" class="<?php echo $task["projectId"]?> draggable" draggable="true">
-                      <p></a><?php echo $task["Task_name"]?></p><br>
-                      <div class="taskColor" style="background-color:<?php echo $user['Color'] ?>"></div>
+                if($user['Id'] == $task['Assigned_To']){/** deze regel is om de juiste user kleur in de task te zetten */
+                  if($task['Progress'] == 0){?> <!-- deze regel zorgt ervoor dat alle task in de juiste kolom komen -->
+                      
+                    <!-- tasks draggable -->
+                    <div id="<?php echo $task["Id"];?>" class="<?php echo $task["projectId"];?> draggable" draggable="true">
+                      <p></a><?php echo $task["Task_name"];?></p><br> <!-- hier staat de naam van de task -->
+                      <div class="taskColor" style="background-color:<?php echo $user['Color'] ?>"></div> <!-- hier staan de kleur en button(volgende regel) van de task -->
                       <button class="taskInfoBtn" data-transition="pop"  data-rel="popup" href="#" id="taskInfoBtn<?php echo $task["Id"] ?>"><i class="fas fa-eye"></i></button>
                     </div>
 
                   <?php }
                 }
-              } ?>
+              }
+            } 
+          } ?>
 
-              <!-- de code voor myTask -->
-              <div class="myTask" id="myTask" name="myTask<?php echo $task["Id"] ?>">
-                <form name="update-<?php echo $task["Id"]?>" method="post" action="projectsController/IngevuldeTask.php" class="form-container2"><br><br>
-                  <input type="text" placeholder="Task Name:" name="Task_name" required value="<?php echo $task["Task_name"]?>"><br><br>
-                  <input type="text" placeholder="Task description:" name="description" value="<?php echo $task["description"]?>"><br><br>
+          <!-- de code voor tasksForm -->
+          <div class="TaskForm" id="TaskForm<?php echo $project["Id"]?>" name="TaskForm">
+            <form name="addTask" method="post" action="../projects/ProjectsController/addTaskOneProject.php?id=<?php echo $project["Id"] ?>" class="form-container2"><br><br>
+              <input type="text" placeholder="task Name:" name="Task_name" required><br><br>
+              <input type="text" placeholder="Task description:" name="Description" required><br><br>
+              <select name="Assigned_To" required>
+                <option value="" selected>assigned to</option>
+                <?php foreach( $users as $user ){ ?>
+                  <option value="<?php echo $user['Id'] ?>" style="background-color:<?php echo $user['Color'] ?>"><?php echo $user["Name"] ?></option>
+                <?php } ?>
+              </select><br>
+              <br><br><br><br><br><br>
+              <button type="button" id="closeAddTaskTab<?php echo $project["Id"]?>">Close add task</button>
+              <button type="submit" value="submit">add task</button>
+            </form>
+          </div>
 
-                  <select name="Assigned_To" required>
-                    <option value="">assigned to</option>
-                    <?php foreach( $users as $user ){ 
-                      if($task["Assigned_To"] == $user["Id"]){ ?>
-                        <option selected value="<?php echo $user['Id'] ?>" style="background-color:<?php echo $user['Color'] ?>"><?php echo $user["Name"] ?></option>
-                      <?php }
-                      else{ ?>
-                        <option value="<?php echo $user['Id'] ?>" style="background-color:<?php echo $user['Color'] ?>"><?php echo $user["Name"] ?></option>
-                      <?php }
-                    } ?>
-                  </select><br>
+          <!-- de script voor tasksForm -->
+          <script scr="jquery-3.5.1.min.js">
+                 
+            $( "#addTaskbtn<?php echo $project["Id"]?>" ).click( function() {
+                  
+            /** TaskForm invisible maken */  
+              if ($(".TaskForm").is(":visible")) {
+                for(i = 0; i < document.getElementsByClassName("TaskForm").length; i++) {
+                  document.getElementsByClassName("TaskForm")[i].style.display = "none";
+                }
+              }
 
-                  <input type="text" name="taskId" value="<?php echo $task['Id'] ?>" hidden><br><br><br><br>
-                  <button type="button" id="closeTaskTab<?php echo $task["Id"] ?>">Close task</button>
-                  <button type="submit" value="submit">Save</button>
-                </form>
-              </div>
+              /** TaskForm visible maken en andere forms invisible */
+              else{
+                if ($(".myTask").is(":visible")) {
+                  for(i = 0; i < document.getElementsByClassName("myTask").length; i++) {
+                    document.getElementsByClassName("myTask")[i].style.display = "none";
+                  }
+                }
 
-              <!-- de script voor myTask -->
-              <script scr="jquery-3.5.1.min.js">
+                if ($(".projectForm").is(":visible")) {
+                  for(i = 0; i < document.getElementsByClassName("projectForm").length; i++) {
+                    document.getElementsByClassName("projectForm")[i].style.display = "none";
+                  }
+                }
 
+                document.getElementById("TaskForm<?php echo $project["Id"]?>").style.display = "block";
+              }
+            });
+                
+            /** TaskForm invisible maken als er op closeAddTaskTab is geklikt */
+            $( "#closeAddTaskTab<?php echo $project["Id"]?>" ).click( function() {
+                for(i = 0; i < document.getElementsByClassName("TaskForm").length; i++) {
+                document.getElementsByClassName("TaskForm")[i].style.display = "none";
+              }
+            });
+
+          </script>
+        </td>
+
+        <!-- droppables -->
+        <!-- de derde kolom van deze row -->
+        <td class="dropTD">
+          <div class="droppable dropDIV" data-draggable-id="<?php echo $project["Id"];?>" name="1">
+            <?php foreach( $tasks as $task ){ 
+              if( $task['projectId'] == $project['Id'] ){
+                foreach( $users as $user ){  
+                  if($user['Id'] == $task['Assigned_To']){ 
+                    if($task['Progress'] == 1){?> <!-- deze regel zorgt ervoor dat alle task in de juiste kolom komen -->
+                      
+                      <!-- de task -->
+                      <div id="<?php echo $task["Id"];?>" class="<?php echo $task["projectId"];?> draggable" draggable="true">
+                        <p></a><?php echo $task["Task_name"];?></p><br>
+                        <div class="taskColor" style="background-color:<?php echo $user['Color'] ?>"></div>
+                        <button class="taskInfoBtn" data-transition="pop"  data-rel="popup" href="#"  id="taskInfoBtn<?php echo $task["Id"] ?>"><i class="fas fa-eye"></i></button>
+                      </div>
+
+                    <?php }
+                  }
+                }
+              } 
+            } ?>
+          </div>
+        </td>
+
+        <!-- de vierde kolom van deze row -->
+        <td class="dropTD">
+          <div class="droppable dropDIV" data-draggable-id="<?php echo $project["Id"];?>" name="2">
+            <?php foreach( $tasks as $task ){ 
+              if( $task['projectId'] == $project['Id'] ){
+                foreach( $users as $user ){  
+                  if($user['Id'] == $task['Assigned_To']){ 
+                    if($task['Progress'] == 2){?> <!-- deze regel zorgt ervoor dat alle task in de juiste kolom komen -->
+                        
+                        <!-- de task -->
+                        <div id="<?php echo $task["Id"];?>" class="<?php echo $task["projectId"];?> draggable" draggable="true">
+                          <p></a><?php echo $task["Task_name"];?></p><br>
+                          <div class="taskColor" style="background-color:<?php echo $user['Color'] ?>"></div>
+                          <button class="taskInfoBtn" data-transition="pop"  data-rel="popup" href="#" id="taskInfoBtn<?php echo $task["Id"] ?>"><i class="fas fa-eye"></i></button>
+                        </div>
+
+                    <?php }
+                  }
+                }
+              } 
+            } ?>
+          </div>
+        </td>
+
+        <!-- de vijfde kolom van deze row -->
+        <td class="dropTD">
+          <div class="droppable dropDIV" data-draggable-id="<?php echo $project["Id"];?>" name="3">
+            <?php foreach( $tasks as $task ){ 
+              if( $task['projectId'] == $project['Id'] ){
+                foreach( $users as $user ){  
+                  if($user['Id'] == $task['Assigned_To']){ 
+                    if($task['Progress'] == 3){?>
+                        
+                      <!-- de task -->
+                      <div id="<?php echo $task["Id"];?>" class="<?php echo $task["projectId"];?> draggable" draggable="true">
+                        <p></a><?php echo $task["Task_name"];?></p><br>
+                        <div class="taskColor" style="background-color:<?php echo $user['Color'] ?>"></div>
+                        <button class="taskInfoBtn" data-transition="pop"  data-rel="popup" href="#" id="taskInfoBtn<?php echo $task["Id"] ?>"><i class="fas fa-eye"></i></button>
+                      </div>
+
+                    <?php }
+                  }
+                } ?>
+
+                <!-- de code voor myTask -->
+                <div class="myTask" id="myTask" name="myTask<?php echo $task["Id"] ?>">
+                  <form name="update-<?php echo $task["Id"]?>" method="post" action="../projects/projectsController/IngevuldeTaskOneProject.php?id=<?php echo $project["Id"] ?>" class="form-container2"><br><br>
+                      <input type="text" placeholder="Task Name:" name="Task_name" required value="<?php echo $task["Task_name"];?>"><br><br>
+                      <input type="text" placeholder="Task description:" name="Description" required value="<?php echo $task["description"]?>"><br><br>
+                      
+                      <select name="Assigned_To" required>
+                        <option value="">assigned to</option>
+                        <?php foreach( $users as $user ){ 
+                          if($task["Assigned_To"] == $user["Id"]){ ?>
+                            <option selected value="<?php echo $user['Id'] ?>" style="background-color:<?php echo $user['Color'] ?>"><?php echo $user["Name"] ?></option>
+                          <?php }
+                          else{ ?>
+                            <option value="<?php echo $user['Id'] ?>" style="background-color:<?php echo $user['Color'] ?>"><?php echo $user["Name"] ?></option>
+                          <?php }
+                        } ?>
+                      </select><br>
+
+                      <input type="text" name="taskId" value="<?php echo $task['Id'] ?>" hidden><br><br><br><br><br><br>
+                      <button type="button" id="closeTaskTab<?php echo $task["Id"] ?>">Close task</button>
+                      <button type="submit" value="submit">Save</button>
+                    </form>
+                  </div>
+
+                  <!-- de script voor myTask -->
+            <script scr="jquery-3.5.1.min.js">
+                  
                 $( "#taskInfoBtn<?php echo $task["Id"] ?>" ).click( function() {
-                  if ($(".myTask").is(":visible")) { /** dit zorgt ervoor dat als myTask visible is dan word het invisible */
-                    for(i = 0; i < document.getElementsByClassName("myTask").length; i++) {
-                      document.getElementsByClassName("myTask")[i].style.display = "none";
+                    if ($(".myTask").is(":visible")) {
+                      for(i = 0; i < document.getElementsByClassName("myTask").length; i++) {
+                        document.getElementsByClassName("myTask")[i].style.display = "none";
+                      }
                     }
-                  }
 
-                  else{
-                    if ($(".TaskForm").is(":visible")) { /** dit zorgt ervoor dat als TaskForm visible is dan word het invisible */
-                      for(i = 0; i < document.getElementsByClassName("TaskForm").length; i++) {
-                        document.getElementsByClassName("TaskForm")[i].style.display = "none";
+                    else{
+                      if ($(".TaskForm").is(":visible")) {
+                        for(i = 0; i < document.getElementsByClassName("TaskForm").length; i++) {
+                          document.getElementsByClassName("TaskForm")[i].style.display = "none";
+                        }
                       }
-                    }
-                    if ($(".projectForm").is(":visible")) { /** dit zorgt ervoor dat als projectForm visible is dan word het invisible */
-                      for(i = 0; i < document.getElementsByClassName("projectForm").length; i++) {
-                        document.getElementsByClassName("projectForm")[i].style.display = "none";
+                      if ($(".projectForm").is(":visible")) {
+                        for(i = 0; i < document.getElementsByClassName("projectForm").length; i++) {
+                         document.getElementsByClassName("projectForm")[i].style.display = "none";
+                        }
                       }
+                      document.getElementsByName("myTask<?php echo $task["Id"] ?>")[0].style.display = "block";
                     }
-                    document.getElementsByName("myTask<?php echo $task["Id"] ?>")[0].style.display = "block";
-                  }
-                });
+                  });
 
                 /** myTask invisible maken als er op closeAddTaskTab is geklikt */
                 $( "#closeTaskTab<?php echo $task["Id"] ?>" ).click( function() {
@@ -682,7 +679,7 @@ include("../templates/headerMenu.php");
                   }
                 });
 
-              </script>
+            </script>
 
             <?php } 
           } ?>
@@ -693,21 +690,21 @@ include("../templates/headerMenu.php");
       <td class="droppable" data-draggable-id="<?php echo $project["Id"]?>" id="done" name="4">
         <!-- deze code zorgt er voor dat het juiste aantal completed tasks in de laatste kolom komen te staan -->
         <?php $i = 0;
-        foreach( $tasks as $task ){
-          if( $task['projectId'] == $project['Id'] ){
-            if( $task["Progress"] == 4){ /** deze regel zorgt ervoor dat alle task in de juiste kolom komen --> */
-              $i++; ?>
-            <?php }
+          foreach( $tasks as $task ){
+            if( $task['projectId'] == $project['Id'] ){
+              if( $task["Progress"] == 4){ /** deze regel zorgt ervoor dat alle task in de juiste kolom komen --> */
+                $i++; ?>
+              <?php }
+            }
           }
-        }
-        echo " <h3 class='doneText' >number of completed tasks: </h3><br><br> ";
-        echo "<h1 class='doneNumber' >$i</h1>";
+          echo " <h3 class='doneText' >number of completed tasks: </h3><br><br> ";
+          echo "<h1 class='doneNumber' >$i</h1>";
         ?>
       </td>
 
     </tr>
   <?php } ?>
-  
+    
 </table>
 
 <!-- dit is een voor het stukje ruimte aan het eind van de pagina ( hoe hoger het getal in de while hoe meer ruimte aan het eind van de pagina ) -->
@@ -715,7 +712,7 @@ include("../templates/headerMenu.php");
   while($i < 60){?>
     <br> <?php
     $i=$i + 1;
-  }
+  } 
 ?>
 
 <!-- styling voor de table, de tasks, de forms en drag and drop -->
@@ -807,7 +804,7 @@ include("../templates/headerMenu.php");
       display:inline;
       word-wrap: break-word;
       margin-block-end: 0;
-      color:  var(--text-primary)
+      color: var(--text-primary);
     }
 
     .droppable{
@@ -953,13 +950,13 @@ include("../templates/headerMenu.php");
   /** voor iedere draggableElement deze functies uitvoeren */
   /** eventListeners zorgen ervoor dat zodra er iets gedaan word er een functie start in dit geval ( bij dragstart word de functie dragstart uitgevoerd ) */
   draggableElements.forEach(elem => {
-    elem.addEventListener("dragstart", dragStart);
+  elem.addEventListener("dragstart", dragStart);
   });
 
   /** voor iedere droppableElement deze functies uitvoeren */
   droppableElements.forEach(elem => {
-    elem.addEventListener("dragenter", dragEnter); 
-    elem.addEventListener("dragover", dragOver); 
+    elem.addEventListener("dragenter", dragEnter);
+    elem.addEventListener("dragover", dragOver);
     elem.addEventListener("dragleave", dragLeave);
     elem.addEventListener("drop", drop);
   });
@@ -998,18 +995,18 @@ include("../templates/headerMenu.php");
       const draggableElementId = draggableElementData[0];
       const draggableElement = document.getElementById(draggableElementId);
       const dropzone = event.target;
-      dropzone.insertBefore(draggableElement, dropzone.childNodes[0]);//zorgt ervoor dat draggableElement voor de eerste task in de droppableElement komt te staan
+      dropzone.insertBefore(draggableElement, dropzone.childNodes[0])//zorgt ervoor dat draggableElement voor de eerste task in de droppableElement komt te staan
       event.dataTransfer.clearData();
       const Progress = event.target.getAttribute("name");
-        
+
       //deze ajax code zorgt ervoor dat de aanpassingen in progress wordt aangepast in de database zonder op een knop te klikken 
-      $.ajax({
-	    	url: "projectsController/save.php",
+	    $.ajax({
+	    	url: "../projects/ProjectsController/save.php",
 	    	type: "POST",
 	    	data: { Progress: Progress, Id: draggableElementId, projectId: droppableElementData },
 	    	cache: false,
-      });
-          
+	  	});
+      
       //dit verwijderd de task als hij in de done kolom komt te staan ( let op: dit verwijderd de task uit de table niet uit de database )
       if(Progress == "4"){
         var removeTask = document.getElementById(draggableElementId);
@@ -1018,6 +1015,8 @@ include("../templates/headerMenu.php");
         //task wordt in gedropt maar ik neem aan dat de code daarvoor hier zou moeten komen.
         //dit kunnen jullie zelf toevoegen als dat gewenst is
         //voor nu moeten jullie de pagina handmatig refreshen en dan wordt dit getal wel aangepast
+        //ps: het lijkt alsof deze pagina precies het zelfde is als projects/index maar de kleine aanpassingen maken een groot verschil
+        //ik heb de documentatie wel het zelfde gemaakt zodat er niet telkens tussen de twee geswitched hoeft te worden
       }
     }
   }

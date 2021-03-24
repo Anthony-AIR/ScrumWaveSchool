@@ -88,7 +88,7 @@ include( "../templates/header.php" );
 <br><br>
 
     <h3>Voer hier de naam van je scrum bord in: </h3>
-    <form name="create" method="post" action="<?php echo URL ?>Home/required"><br>
+    <form name="create" method="post" action="HomeController/required.php"><br>
     <p style="color:red;"><?php echo $nameErr?></p><br>
         <input style="width: 300px; height: 40px;" class="text-center" type="text" name="Name" placeholder="Project naam" value="<?php echo $Name?>"></input><br>
     </form><br><br>
@@ -102,10 +102,10 @@ include( "../templates/header.php" );
   </tr>
   <?php foreach ($projects as $project){ ?>
     <tr style="color: #15538c;">
-        <td><a href="<?php echo URL ?>Home/oneProject/<?php echo $project["Id"]?>"><p class="text-center"><?php echo $project["Name"]?></p></a></td>
+        <td><a href="project2.php?id=<?php echo $project["Id"]?>"><p class="text-center"><?php echo $project["Name"]?></p></a></td>
         <td><a id="update" style="margin-top:-12px;" class="text-center" href="update.php?id=<?php echo $project["Id"]?>"><i class="fas fa-pencil-alt text-center"></i></a></td>
         <td><a id="delete" style="margin-top:-12px;" href="delete.php?id=<?php echo $project["Id"]?>"><i class="fas fa-trash"></i></a></td>
-        <td><a id="done"   style="margin-top:-12px;" href="Home/done/<?php echo $project["Id"]?>"><i class="fas fa-check"></i></a></td>
+        <td><a id="done"   style="margin-top:-12px;" href="done.php?id=<?php echo $project["Id"]?>"><i class="fas fa-check"></i></a></td>
     </tr>
   <?php } ?>
 </table>
@@ -119,11 +119,11 @@ $doneProject = doneProjects();
   <span class="caret"></span></button>
   <ul class="dropdown-menu text-center" role="menu" aria-labelledby="menu1">
   <?php foreach($doneProject as $Done){?>
-    <li role="presentation"><a href="<?php echo URL ?>Home/oneProject/<?php echo $Done["Id"];?>" role="menuitem"><?php echo $Done["Name"]?></a></li><br>
+    <li role="presentation"><a href="oneProject.php?id=<?php echo $Done["Id"];?>" role="menuitem"><?php echo $Done["Name"]?></a></li><br>
   <?php } ?>
   </ul>
     <br><br><br><br>
 </div>
-<a id="overview" href="<?php echo URL ?>Home/allProjects"><i class="fas fa-tasks"></i></a>
+<a id="overview" href="../Projects/index.php"><i class="fas fa-tasks"></i></a>
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 </body>

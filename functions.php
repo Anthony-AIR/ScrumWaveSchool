@@ -83,7 +83,7 @@
         $statement = $conn->prepare("UPDATE tasks SET Task_name = :Task_name, description = :description, Assigned_To = :AssignedTo WHERE id = :id");
         $statement->bindParam(":id" , $id);
         $statement->bindParam(":Task_name" , $data["Task_name"]);
-        $statement->bindParam(":description" , $data["description"]);
+        $statement->bindParam(":description" , $data["Description"]);
         $statement->bindParam(":AssignedTo" , $data["Assigned_To"]);
         $statement->execute();
     }
@@ -154,7 +154,7 @@
     function createTask($data, $id){
         $conn = openDatabaseConnection();
         $statement = $conn->prepare("INSERT INTO tasks (Description, Task_name, Assigned_To, projectId ) VALUES (:description, :TaskName, :AssignedTo, :id )");
-        $statement->bindParam(":description" , $data["description"]);
+        $statement->bindParam(":description" , $data["Description"]);
         $statement->bindParam(":TaskName" , $data["Task_name"]);
         $statement->bindParam(":AssignedTo" , $data["Assigned_To"]);
         $statement->bindParam(":id" , $id);
@@ -164,7 +164,7 @@
     function updateAllFromProject($data, $id){
         $conn = openDatabaseConnection();
         $statement = $conn->prepare("UPDATE projects SET description= :description, Name= :Name, Color= :Color WHERE Id = :Id");
-        $statement->bindParam(":description" , $data["description"]);
+        $statement->bindParam(":description" , $data["Description"]);
         $statement->bindParam(":Name" , $data["Name"]);
         $statement->bindParam(":Color" , $data["Color"]);
         $statement->bindParam(":Id" , $id);

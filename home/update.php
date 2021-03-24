@@ -17,7 +17,7 @@ include( "../templates/header.php" );
 <?php foreach($updaten as $update){?>
     <form class="text-center" name="update" method="post" action="HomeController/updateProject.php?id=<?php echo $update["Id"]?>"><br><br>
 	    <p>Project name: &nbsp; &nbsp;<input class="text-center" type="text" name="Name" value="<?php echo $update["Name"]?>"></input></p><br><br>
-        <p>Project description: &nbsp; &nbsp;<input class="text-center" type="text" name="description" value="<?php echo $update["description"]?>"></p><br><br>
+        <p>Project description: &nbsp; &nbsp;<input class="text-center" type="text" name="Description" value="<?php echo $update["description"]?>"></p><br><br>
         <p>Project color: &nbsp; &nbsp;
         <select style="width:140px; height:30px;" name="Color" required><br><br>
                     <?php if($update["Color"] == "red"){?>
