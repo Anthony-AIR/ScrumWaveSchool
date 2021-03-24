@@ -1,7 +1,6 @@
 <?php
 require( "../functions.php" );
 $projects = getAllProjects();
-$id = $_GET["id"];
 $names = getProjectById( $_GET["id"] );
 include( "../templates/header.php" );
 
